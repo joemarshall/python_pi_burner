@@ -392,10 +392,10 @@ class MenuFrame(EscapeFrame):
         self.fix()
 
     def burn_lab(self):
-        if not os.path.exists("wpa_supplicant.lab.conf"):
+        if not os.path.exists("networks.lab.conf"):
             dlg = PopUpDialog(
                 self.screen,
-                text="You need to create wpa_supplicant.lab.conf before you can burn lab images",
+                text="You need to create networks.lab.conf before you can burn lab images",
                 buttons=["OK"],
             )
             self._scene.add_effect(dlg)
@@ -410,10 +410,10 @@ class MenuFrame(EscapeFrame):
         raise NextScene("wifi")
 
     def set_lab(self):
-        if not os.path.exists("wpa_supplicant.lab.conf"):
+        if not os.path.exists("networks.lab.conf"):
             dlg = PopUpDialog(
                 self.screen,
-                text="You need to create wpa_supplicant.lab.conf before you can burn lab images",
+                text="You need to create networks.lab.conf before you can burn lab images",
                 buttons=["OK"],
             )
             self._scene.add_effect(dlg)

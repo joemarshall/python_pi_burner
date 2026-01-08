@@ -173,3 +173,5 @@ installscripts/init_task.sh
 userconf.lab.conf
 installscripts/userconf*
 networks.lab.conf
+**/setup_dss_mac_address.sh
+temp*.txt

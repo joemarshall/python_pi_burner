@@ -77,7 +77,6 @@ class ImageBurner:
         raw_wql = "SELECT * FROM __InstanceOperationEvent WITHIN 2 WHERE TargetInstance ISA 'Win32_DiskDrive'"
         new_drive=None
         while True:
-            print("rescan")
             self.rescan_disks(wm,new_drive=new_drive)
             target_instance=None
             watcher = wm.watch_for (raw_wql=raw_wql,wmi_class="__InstanceOperationEvent")
@@ -100,17 +99,20 @@ class ImageBurner:
     def new_drive(self,wm,disk):
         # 7 = removable drive
         if disk.Capabilities is not None and 7 in disk.Capabilities:
+            print("Removable:",disk)
 
             if disk.Signature in self.location_cache:
+                print("Woof")
                 location = self.location_cache[disk.Signature]
             else:
                 location="Unknown"
-                for x in disk.associators(wmi_result_class="Win32_PnPEntity"):
-                    l=self._get_disk_path(wm,x)
-                    if l!=None:
-                        location=self._rewrite_location(l)                            
-                        self.location_cache[disk.Signature]=location
-                        break
+                # for x in disk.associators(wmi_result_class="Win32_PnPEntity"):
+                #     l=self._get_disk_path(wm,x)
+                #     if l!=None:
+                #         location=self._rewrite_location(l)                            
+                #         self.location_cache[disk.Signature]=location
+                #         break
+            print("Returning")
             return (disk.DeviceID,disk.Model,location)
         return None
 
@@ -200,13 +202,17 @@ if __name__=="__main__":
 
     i=ImageBurner()
     import timeit
-    for c in range(100):
-        print("GD:",i.get_all_disks())
-        time.sleep(2)
-    # for disk,model in i.get_all_disks():
-    #     i.burn_image_to_disk(source_image="raspios.img",target_disk=disk)
-    # while i.burning():
-    #     print(".")
-    #     print(i.get_progress())
-    #     time.sleep(5)
+    print("GD:",i.get_all_disks())
+    time.sleep(2)
+    print("GD:",i.get_all_disks())
+    time.sleep(2)
+    print("GD:",i.get_all_disks())
+    time.sleep(2)
+    def bp(current,total,id):
+        print(f"Progress {id}: {current}/{total} ({(current*100)//total}%)")
+        return True        
+
+    for disk,model,location in i.get_all_disks():
+         rawdisk.copy_to_disk("raspios.img",disk,progress_callback=bp,id=1)
+         break
 

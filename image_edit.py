@@ -49,8 +49,11 @@ class FatDiskPath:
 def add_contents_to_raw_disk(device_name,prepatched):
     fix_line_endings("contents")
     fix_line_endings("installscripts")
-    v=vopen(device_name,'r+b','partition0')
+    v=vopen(device_name,mode='r+b',what='partition0')
+    print(v,type(v))
     root=v.open()
+    x=str(root.dirtable)
+
     install_scripts=glob("installscripts/*")
     copy_in(["contents"]+install_scripts,root)
     if not prepatched:
@@ -176,8 +179,10 @@ def add_contents_to_mounted_drive(drive_letter):
 def create_init_files(options):
     if options.labimage == True:
         shutil.copyfile("userconf.lab.conf", "installscripts/userconf.txt")
+        shutil.copyfile("setup_dss_mac_address.sh", "installscripts/setup_dss_mac_address.sh")
     else:
         shutil.copyfile("userconf.student.conf", "installscripts/userconf.txt")
+        os.unlink("installscripts/setup_dss_mac_address.sh")
 
     task_text = """#!/bin/bash
 
@@ -421,7 +426,9 @@ def mount_image_fat(img_file):
 
 
 if __name__ == "__main__":
-    add_contents_to_raw_disk("\\\\.\\PHYSICALDRIVE2")
+    import logging
+    logging.basicConfig(level=logging.DEBUG)
+    add_contents_to_raw_disk("\\\\.\\PHYSICALDRIVE1",prepatched=False)
 #     from imager import DataHolder
 #     dataholder=DataHolder(burner=None)
 #     dataholder.labimage=False
