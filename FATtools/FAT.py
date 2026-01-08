@@ -479,10 +479,17 @@ class FAT(object):
         to that amount."""
         if self.free_clusters_map == None:
             self.map_free_space()
-        try:
-            i, n = self.free_clusters_map.popitem()
-        except KeyError:
-            return -1, -1
+        chosen = None
+        for i in sorted(self.free_clusters_map.keys()):
+            n = self.free_clusters_map[i]
+            if n>=count:
+                chosen=i
+                break
+        if chosen == None:
+            return -1,-1
+        n=self.free_clusters_map[chosen]
+        i=chosen
+        del self.free_clusters_map[i]
         if DEBUG&4: log("got run of %d free clusters from #%x", n, i)
         if n-count > 0:
             self.free_clusters_map[i+count] = n-count # updates map
@@ -675,7 +682,7 @@ class Chain(object):
             while 1:
                 length, next = self.fat.count_run(start)
                 self.runs[start] = length
-                if next == self.fat.last or next==start+length-1: break
+                if next >= self.fat.last or next==start+length-1: break
                 start = next
         if DEBUG&4: log("Runs map for %s: %s", self, self.runs)
 
