@@ -82,7 +82,7 @@ def vopen(path, mode='rb', what='auto'):
     if DEBUG&2: log("Ok, valid MBR")
     partition=0
     if what.startswith('partition'):
-        partition = int(re.match('partition(\d+)', what).group(1))
+        partition = int(re.match(r'partition(\d+)', what).group(1))
     if DEBUG&2: log("Trying to open partition #%d", partition)
     part = None
     if mbr.partitions[0].bType == 0xEE: # GPT

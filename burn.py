@@ -105,7 +105,7 @@ class ImageBurner:
                 print("Woof")
                 location = self.location_cache[disk.Signature]
             else:
-                location="Unknown"
+                location=(1,1)
                 # for x in disk.associators(wmi_result_class="Win32_PnPEntity"):
                 #     l=self._get_disk_path(wm,x)
                 #     if l!=None:
