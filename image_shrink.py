@@ -9,14 +9,18 @@ def shrink_image(filename:Path|str,patch_progress_fn: Any)->None:
     Args:
         filename: Path to the image file to shrink
     """
-    if type(filename)==Path:
-        filename=filename.name
-    proc = subprocess.Popen(['wsl', '-u','root','bash','pishrink.sh',filename],cwd=filename.parent,stdout=subprocess.PIPE,stderr=subprocess.STDOUT)
+    if type(filename)==str:
+        filename=Path(filename).absolute()
+    proc = subprocess.Popen(['wsl', '-u','root','bash','pishrink.sh',filename.name],cwd=filename.parent,stdout=subprocess.PIPE,stderr=subprocess.STDOUT,text=True)
+    all_lines=[]
     while proc.returncode==None:
         line = proc.stdout.readline()
         if len(line)==0:
             break
-        patch_progress_fn(line)
+        all_lines.append(line)
+        if len(all_lines)>20:
+            all_lines=all_lines[-20:]
+        patch_progress_fn("\n".join(all_lines))
 
 if __name__=="__main__":
 

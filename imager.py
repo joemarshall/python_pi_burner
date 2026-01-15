@@ -400,11 +400,13 @@ class MenuFrame(EscapeFrame):
             )
             self._scene.add_effect(dlg)
         else:
+            self.dataholder.prepatched_image = False
             self.dataholder.contents_only = False
             self.dataholder.labimage = True
             raise NextScene("burn_ready")
 
     def burn_student(self):
+        self.dataholder.prepatched_image = False
         self.dataholder.contents_only = False
         self.dataholder.labimage = False
         raise NextScene("wifi")
@@ -418,20 +420,24 @@ class MenuFrame(EscapeFrame):
             )
             self._scene.add_effect(dlg)
         else:
+            self.dataholder.prepatched_image = False
             self.dataholder.contents_only = True
             self.dataholder.labimage = True
             raise NextScene("burn_ready")
 
     def set_student(self):
+        self.dataholder.prepatched_image = False
         self.dataholder.labimage = False
         self.dataholder.contents_only = True
         raise NextScene("wifi")
 
     def update_base_image(self):
+        self.dataholder.prepatched_image = False
         self.dataholder.patch_image = False
         raise NextScene("update_image")
 
     def patch_base_image(self):
+        self.dataholder.prepatched_image = False
         self.dataholder.patch_image = True
         raise NextScene("update_image")
 
