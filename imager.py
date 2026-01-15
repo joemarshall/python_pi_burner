@@ -485,16 +485,7 @@ class CapturePrepatchedFrame(EscapeFrame):
             self.screen.draw_next_frame()
         return not self.cancelled
 
-    def _patch_progress(self,percentage,task_out):
-        # progress = int((40 * percentage) / 100)
-        # new_progress_text = (
-        #     "Progress: "
-        #     + ("*" * progress)
-        #     + (
-        #         "." * (40 - progress)
-        #         + "Shrinking image"
-        #     )
-        # )
+    def _patch_progress(self,task_out):
         new_progress_text = task_out
         if self.progress.text != new_progress_text:
             self.progress.text = new_progress_text
@@ -520,10 +511,11 @@ class CapturePrepatchedFrame(EscapeFrame):
         else:
             self.cancelled=False
             try:
-                copy_from_disk(
-                    all_disks[0][0], "raspios_prepatched.img", self._burn_progress, 1
-                )
-                shrink_image("raspios_prepatched.img",self._patch_progress)
+                for disk, model, location in self.dataholder.burner.get_all_disks():
+                    copy_from_disk(
+                        disk, "raspios_prepatched.img", self._burn_progress, 1
+                    )
+                    shrink_image("raspios_prepatched.img",self._patch_progress)
             except RuntimeError:
                 pass            
             if self.cancelled:
@@ -689,7 +681,8 @@ def main(screen, scene, holder):
     # 1) Menu to choose what to do
     # 2) Form to input wifi + passwords
     # 3) Burn progress screen
-    os.chdir(os.path.dirname(__file__))
+    our_dir = os.path.dirname(os.path.abspath(__file__))
+    os.chdir(our_dir)
     scenes = [
         Scene([MenuFrame(screen, holder)], name="menu"),
         Scene([WifiFrame(screen, holder)], name="wifi"),

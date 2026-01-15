@@ -5,10 +5,10 @@
     "version": "0.2.0",
     "configurations": [        
         {
-            "name": "Python Debugger: imageedit File",
+            "name": "Python Debugger: imager",
             "type": "debugpy",
             "request": "launch",
-            "program": "image_edit.py",
+            "program": "imager.py",
             "console": "integratedTerminal"
         }
     ]
